@@ -4,9 +4,7 @@ const router = express.Router()
 const Schedule = require("../models/Schedule")
 
 
-/* =========================
-   GET BY DOCTOR
-========================= */
+/*GET BY DOCTOR*/
 router.get("/", async (req,res)=>{
   try{
 
@@ -28,9 +26,7 @@ router.get("/", async (req,res)=>{
 })
 
 
-/* =========================
-   CREATE
-========================= */
+/*CREATE*/
 router.post("/", async (req,res)=>{
   try{
 
@@ -50,9 +46,7 @@ router.post("/", async (req,res)=>{
 })
 
 
-/* =========================
-   UPDATE
-========================= */
+/*UPDATE*/
 router.put("/:id", async (req,res)=>{
   try{
 
@@ -70,9 +64,7 @@ router.put("/:id", async (req,res)=>{
 })
 
 
-/* =========================
-   DELETE
-========================= */
+/*DELETE*/
 router.delete("/:id", async (req,res)=>{
   try{
 

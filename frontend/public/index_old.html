@@ -173,9 +173,7 @@ const API_BASE = "https://medica-plus.onrender.com"
 let selectedDoctor = null
 let selectedSlot = null
 
-//------------------------------------------------
 // LOAD DOCTORS
-//------------------------------------------------
 async function loadDoctors(){
   try{
 
@@ -198,23 +196,17 @@ async function loadDoctors(){
   }
 }
 
-//------------------------------------------------
 // DOCTOR SELECT
-//------------------------------------------------
 document.getElementById("doctorSelect").addEventListener("change", e=>{
   selectedDoctor = e.target.value
   selectedSlot = null
   loadSlots()
 })
 
-//------------------------------------------------
 // DATE CHANGE
-//------------------------------------------------
 document.getElementById("dateInput").addEventListener("change", loadSlots)
 
-//------------------------------------------------
 // LOAD AVAILABLE SLOTS
-//------------------------------------------------
 async function loadSlots(){
 
   const date = document.getElementById("dateInput").value
@@ -255,9 +247,7 @@ async function loadSlots(){
   }
 }
 
-//------------------------------------------------
 // BOOK APPOINTMENT
-//------------------------------------------------
 async function bookAppointment(){
 
   const patientName = document.getElementById("patientName").value
@@ -296,9 +286,7 @@ async function bookAppointment(){
   }
 }
 
-//------------------------------------------------
 // INIT
-//------------------------------------------------
 loadDoctors()
 
 </script>

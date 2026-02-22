@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="global.css">
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card" style="max-width:420px;margin:auto">
+
+    <h2 class="title">Admin Login</h2>
+
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+
+    <button class="btn btn-primary" onclick="login()">
+      เข้าสู่ระบบ
+    </button>
+
+    <p id="error" style="color:red;text-align:center;margin-top:10px"></p>
+
+  </div>
+
+</div>
+
+<script>
+async function login(){
+
+  const username = document.getElementById("username").value.trim()
+  const password = document.getElementById("password").value.trim()
+  const errorBox = document.getElementById("error")
+
+  errorBox.innerText = ""
+
+  if(!username || !password){
+    errorBox.innerText = "กรุณากรอกข้อมูลให้ครบ"
+    return
+  }
+
+  try{
+
+    const res = await fetch("http://localhost:5000/api/admin/login",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json"},
+      body:JSON.stringify({ username, password })
+    })
+
+    if(res.ok){
+      window.location.href = "admin.html"
+    }else{
+      const msg = await res.text()
+      errorBox.innerText = msg || "Login failed"
+    }
+
+  }catch(err){
+    errorBox.innerText = "Server not responding"
+  }
+}
+</script>
+
+</body>
+</html>

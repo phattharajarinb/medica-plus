@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medica+ Admin</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,Arial}
+
+body{
+min-height:100vh;
+background:linear-gradient(135deg,#7ea2cf,#9bb6d9);
+display:flex;align-items:center;justify-content:center;padding:40px;
+}
+
+.app{
+width:1200px;background:#e9eef6;border-radius:30px;padding:30px;
+box-shadow:0 30px 90px rgba(0,0,0,.2);
+}
+
+.header{
+display:flex;justify-content:space-between;align-items:center;margin-bottom:25px
+}
+.logo{font-size:22px;font-weight:700;color:#1f3b6d}
+
+.nav{display:flex;gap:25px}
+.nav button{
+background:none;border:none;font-size:15px;
+cursor:pointer;color:#1f3b6d;font-weight:500;
+}
+.nav button.active{font-weight:700}
+
+.admin-btn{
+background:linear-gradient(135deg,#3b82f6,#2563eb);
+color:white;padding:10px 22px;border-radius:30px;border:none;font-weight:600;
+}
+
+.panel{
+background:white;border-radius:20px;padding:25px;margin-top:20px
+}
+.hidden{display:none}
+
+h2{color:#1f3b6d;margin-bottom:15px}
+
+.row{display:flex;gap:10px;margin-bottom:15px;align-items:center;flex-wrap:wrap}
+
+select,input{
+padding:8px 10px;border-radius:8px;border:1px solid #ddd
+}
+
+button{border:none;padding:8px 14px;border-radius:8px;cursor:pointer}
+.primary{background:#1f3b6d;color:white}
+.success{background:#10b981;color:white}
+.danger{background:#ef4444;color:white}
+
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid #eee}
+th{background:#f1f5f9;text-align:left}
+
+.time-input{width:120px}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<div class="header">
+<div class="logo">Medica+</div>
+
+<div class="nav">
+<button class="active" onclick="showTab(event,'doctors')">รายชื่อแพทย์</button>
+<button onclick="showTab(event,'schedule')">ตารางเวลาแพทย์</button>
+<button onclick="showTab(event,'bookings')">การจอง</button>
+</div>
+
+<button class="admin-btn">Admin</button>
+</div>
+
+<!-- จัดการแพทย์ -->
+<div id="doctors" class="panel">
+
+<h2>จัดการแพทย์</h2>
+
+<div class="row">
+<input id="doctorName" placeholder="ชื่อแพทย์">
+<input id="doctorSpec" placeholder="สาขา">
+<button class="success" onclick="createDoctor()">เพิ่มแพทย์</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>ชื่อ</th>
+<th>สาขา</th>
+<th>จัดการ</th>
+</tr>
+</thead>
+<tbody id="doctorTable"></tbody>
+</table>
+
+</div>
+
+<!-- ตารางเวลาแพทย์ -->
+<div id="schedule" class="panel hidden">
+
+<h2>ตารางเวลาแพทย์</h2>
+
+<div class="row">
+<select id="doctorSelect" onchange="loadSchedule()"></select>
+
+<select onchange="changeDay(this.value)">
+<option value="monday">Monday</option>
+<option value="tuesday">Tuesday</option>
+<option value="wednesday">Wednesday</option>
+<option value="thursday">Thursday</option>
+<option value="friday">Friday</option>
+<option value="saturday">Saturday</option>
+<option value="sunday">Sunday</option>
+</select>
+
+<button class="success" onclick="addSlot()">เพิ่มเวลา</button>
+<button class="primary" onclick="saveSchedule()">บันทึก</button>
+</div>
+
+<table>
+<thead><tr><th>เวลา</th><th></th></tr></thead>
+<tbody id="scheduleTable"></tbody>
+</table>
+
+</div>
+
+<!-- การจอง -->
+<div id="bookings" class="panel hidden">
+
+<h2>จัดการการจอง</h2>
+
+<div class="row">
+<input id="bookPatient" placeholder="ชื่อคนไข้">
+<select id="bookDoctor"></select>
+<input type="date" id="bookDate">
+<input type="time" id="bookTime">
+<button class="success" onclick="createBooking()">สร้างการจอง</button>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>คนไข้</th>
+<th>แพทย์</th>
+<th>วันที่</th>
+<th>เวลา</th>
+<th></th>
+</tr>
+</thead>
+<tbody id="bookingTable"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+const API_DOCTOR="http://localhost:5000/api/doctors"
+const API_BOOK="http://localhost:5000/api/appointments"
+
+let doctors=[]
+let bookings=[]
+let currentDay="monday"
+let slots=[]
+
+const doctorSelect=document.getElementById("doctorSelect")
+const scheduleTable=document.getElementById("scheduleTable")
+
+//หน้าต่าง
+function showTab(e,id){
+document.querySelectorAll(".panel").forEach(p=>p.classList.add("hidden"))
+document.getElementById(id).classList.remove("hidden")
+document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"))
+e.target.classList.add("active")
+}
+
+//โหลดข้อมูลทั้งหมด
+async function loadAll(){
+await loadDoctors()
+await loadBookings()
+}
+
+async function loadDoctors(){
+const res=await fetch(API_DOCTOR)
+doctors=await res.json()
+renderDoctors()
+fillDoctorSelect()
+}
+
+async function loadBookings(){
+const res=await fetch(API_BOOK)
+bookings=await res.json()
+renderBookings()
+}
+
+//ฟังก์ชันจัดการแพทย์
+function renderDoctors(){
+doctorTable.innerHTML=doctors.map(d=>`
+<tr>
+<td><input value="${d.name}" onchange="updateDoctor('${d._id}','name',this.value)"></td>
+<td><input value="${d.specialization}" onchange="updateDoctor('${d._id}','specialization',this.value)"></td>
+<td><button class="danger" onclick="deleteDoctor('${d._id}')">ลบ</button></td>
+</tr>`).join("")
+}
+
+async function createDoctor(){
+await fetch(API_DOCTOR,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+name:doctorName.value,
+specialization:doctorSpec.value
+})
+})
+doctorName.value=""
+doctorSpec.value=""
+loadDoctors()
+}
+
+async function updateDoctor(id,field,value){
+const doc=doctors.find(d=>d._id===id)
+await fetch(API_DOCTOR+"/"+id,{
+method:"PUT",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({...doc,[field]:value})
+})
+}
+
+async function deleteDoctor(id){
+await fetch(API_DOCTOR+"/"+id,{method:"DELETE"})
+loadDoctors()
+}
+
+//ฟังก์ชันจัดการการจอง
+function fillDoctorSelect(){
+doctorSelect.innerHTML=doctors.map(d=>
+`<option value="${d._id}">${d.name} (${d.specialization})</option>`
+).join("")
+bookDoctor.innerHTML=doctorSelect.innerHTML
+loadSchedule()
+}
+
+//จัดการตารางเวลา
+function changeDay(day){
+currentDay=day
+loadSchedule()
+}
+
+function loadSchedule(){
+const id=doctorSelect.value
+if(!id)return
+const doctor=doctors.find(d=>d._id===id)
+slots=doctor.schedule?.[currentDay]||[]
+renderSchedule()
+}
+
+function renderSchedule(){
+scheduleTable.innerHTML=slots.map((t,i)=>`
+<tr>
+<td><input class="time-input" type="time" value="${t}" onchange="slots[${i}]=this.value"></td>
+<td><button class="danger" onclick="removeSlot(${i})">ลบ</button></td>
+</tr>`).join("")
+}
+
+function addSlot(){slots.push("09:00");renderSchedule()}
+function removeSlot(i){slots.splice(i,1);renderSchedule()}
+
+async function saveSchedule(){
+const id=doctorSelect.value
+const doctor=doctors.find(d=>d._id===id)
+const newSchedule={...(doctor.schedule||{}),[currentDay]:slots}
+
+const res=await fetch(API_DOCTOR+"/"+id,{
+method:"PUT",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({schedule:newSchedule})
+})
+const updated=await res.json()
+doctors=doctors.map(d=>d._id===updated._id?updated:d)
+alert("บันทึกสำเร็จ")
+}
+
+//การจอง
+function renderBookings(){
+bookingTable.innerHTML=bookings.map(b=>`
+<tr>
+<td>
+<input value="${b.patientName||''}"
+onchange="updateBooking('${b._id}','patientName',this.value)">
+</td>
+
+<td>${b.doctor?.name||""}</td>
+
+<td>
+<input type="date"
+value="${b.date}"
+onchange="updateBooking('${b._id}','date',this.value)">
+</td>
+
+<td>
+<input type="time"
+value="${b.time}"
+onchange="updateBooking('${b._id}','time',this.value)">
+</td>
+
+<td>
+<button class="danger" onclick="deleteBooking('${b._id}')">ลบ</button>
+</td>
+</tr>
+`).join("")
+}
+
+async function createBooking(){
+await fetch(API_BOOK,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+doctor:bookDoctor.value,
+patientName:bookPatient.value,
+date:bookDate.value,
+time:bookTime.value
+})
+})
+bookPatient.value=""
+bookDate.value=""
+bookTime.value=""
+loadBookings()
+}
+
+async function updateBooking(id,field,value){
+const b=bookings.find(x=>x._id===id)
+await fetch(API_BOOK+"/"+id,{
+method:"PUT",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({...b,[field]:value})
+})
+}
+
+async function deleteBooking(id){
+await fetch(API_BOOK+"/"+id,{method:"DELETE"})
+loadBookings()
+}
+
+loadAll()
+</script>
+</body>
+</html>

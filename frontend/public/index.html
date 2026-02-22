@@ -274,7 +274,7 @@ function toggleDoctors(){
 
 async function loadDoctors(){
   try{
-    const res = await fetch("http://localhost:5000/api/doctors");
+    const res = await fetch("https://medica-plus.onrender.com/api/doctors");
     const doctors = await res.json();
 
     const dropdown = document.getElementById("doctorDropdown");

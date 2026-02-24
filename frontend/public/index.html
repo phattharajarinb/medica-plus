@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+/*CSS*/
 *{
   margin:0;
   padding:0;
@@ -22,7 +23,6 @@ body{
   align-items:center;
 }
 
-/* ===== CONTAINER ===== */
 .app{
   width:1200px;
   height:700px;
@@ -32,10 +32,9 @@ body{
   box-shadow:0 40px 80px rgba(0,60,150,0.25);
   padding:40px;
   position:relative;
-  overflow:visible; /* สำคัญมาก */
+  overflow:visible;
 }
 
-/* ===== NAV ===== */
 .nav{
   display:flex;
   justify-content:space-between;
@@ -62,16 +61,20 @@ body{
   cursor:pointer;
 }
 
-.admin-btn{
+.action-btn{
   background:linear-gradient(135deg,#3aa0ff,#0066ff);
   color:white;
   padding:10px 22px;
   border-radius:30px;
   cursor:pointer;
   box-shadow:0 10px 25px rgba(0,100,255,0.35);
+  transition:0.3s;
 }
 
-/* ===== HERO ===== */
+.action-btn:hover{
+  transform:translateY(-2px);
+}
+
 .hero{
   display:flex;
   margin-top:40px;
@@ -114,11 +117,10 @@ body{
   box-shadow:0 10px 25px rgba(0,100,255,0.35);
 }
 
-/* ===== IMAGE ===== */
 .right{
   flex:1;
   position:relative;
-  z-index:1; /* ต่ำกว่า dropdown */
+  z-index:1;
 }
 
 .hospital{
@@ -137,7 +139,6 @@ body{
 .card1{ top:0; right:20px; }
 .card2{ bottom:20px; left:40px; }
 
-/* ===== SERVICES ===== */
 .services{
   margin-top:40px;
   display:flex;
@@ -155,7 +156,6 @@ body{
 
 .service:hover{ transform:translateY(-5px); }
 
-/* ===== DOCTOR DROPDOWN ===== */
 .dropdown{
   position:absolute;
   top:40px;
@@ -166,7 +166,7 @@ body{
   box-shadow:0 20px 45px rgba(0,0,0,0.18);
   display:none;
   min-width:260px;
-  z-index:9999; /* สำคัญมาก */
+  z-index:9999;
   animation:fadeIn .25s ease;
 }
 
@@ -212,8 +212,14 @@ small{
     <a>About</a>
   </div>
 
-  <div class="admin-btn" onclick="location.href='admin-login.html'">
-    Admin
+  <div style="display:flex; gap:15px;">
+    <div class="action-btn" onclick="location.href='login.html'">
+      Login
+    </div>
+
+    <div class="action-btn" onclick="location.href='admin-login.html'">
+      Admin
+    </div>
   </div>
 </div>
 
@@ -230,7 +236,7 @@ small{
   พร้อมเทคโนโลยีทางการแพทย์ระดับสากล
   </div>
 
-  <button class="btn" onclick="location.href='index_old.html'">
+  <button class="btn" onclick="goBooking()">
     จองคิวแพทย์
   </button>
 </div>
@@ -298,7 +304,29 @@ async function loadDoctors(){
   }
 }
 
+/* เพิ่มส่วนตรวจสอบ login */
+
+function goBooking(){
+  const token = localStorage.getItem("patientToken");
+
+  if(!token){
+    alert("กรุณาเข้าสู่ระบบก่อนจองคิว");
+    window.location.href = "login.html";
+    return;
+  }
+
+  window.location.href = "index_old.html";
+}
+
 function selectDoctor(id){
+  const token = localStorage.getItem("patientToken");
+
+  if(!token){
+    alert("กรุณาเข้าสู่ระบบก่อนเลือกแพทย์");
+    window.location.href = "login.html";
+    return;
+  }
+
   window.location.href = `index_old.html?doctor=${id}`;
 }
 

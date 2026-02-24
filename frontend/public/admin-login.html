@@ -1,27 +1,140 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
-  <title>Admin Login</title>
-  <link rel="stylesheet" href="global.css">
+<meta charset="UTF-8">
+<title>Admin Login | Medica+</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:linear-gradient(135deg,#5f8fdc,#9bbcf3);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* ===== CARD ===== */
+.login-card{
+  width:420px;
+  padding:45px;
+  border-radius:28px;
+  background:rgba(255,255,255,0.65);
+  backdrop-filter:blur(25px);
+  box-shadow:0 40px 80px rgba(0,60,150,0.25);
+  text-align:center;
+}
+
+.logo{
+  font-size:26px;
+  font-weight:700;
+  color:#0b3c74;
+}
+
+.subtitle{
+  font-size:14px;
+  color:#5b7aa6;
+  margin-bottom:30px;
+}
+
+/* ===== INPUT ===== */
+.input-group{
+  text-align:left;
+  margin-bottom:18px;
+}
+
+.input-group label{
+  font-size:13px;
+  color:#0b3c74;
+  display:block;
+  margin-bottom:6px;
+}
+
+.input-group input{
+  width:100%;
+  padding:12px 15px;
+  border-radius:14px;
+  border:none;
+  outline:none;
+  background:#eef3fb;
+  font-size:14px;
+}
+
+.input-group input:focus{
+  box-shadow:0 0 0 2px #3a7dff;
+}
+
+/* ===== BUTTON ===== */
+.login-btn{
+  width:100%;
+  margin-top:15px;
+  background:linear-gradient(135deg,#2d6cdf,#004cff);
+  border:none;
+  color:white;
+  padding:14px;
+  border-radius:30px;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,80,200,0.35);
+  transition:0.3s;
+}
+
+.login-btn:hover{
+  transform:translateY(-2px);
+}
+
+.error{
+  margin-top:12px;
+  color:red;
+  font-size:13px;
+}
+
+.back{
+  margin-top:20px;
+  font-size:13px;
+  color:#5b7aa6;
+}
+
+.back a{
+  color:#004cff;
+  text-decoration:none;
+}
+</style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="login-card">
 
-  <div class="card" style="max-width:420px;margin:auto">
+  <div class="logo">Medica+</div>
+  <div class="subtitle">เข้าสู่ระบบผู้ดูแลระบบ (Admin)</div>
 
-    <h2 class="title">Admin Login</h2>
+  <div class="input-group">
+    <label>Username</label>
+    <input id="username" placeholder="Enter username">
+  </div>
 
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
+  <div class="input-group">
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Enter password">
+  </div>
 
-    <button class="btn btn-primary" onclick="login()">
-      เข้าสู่ระบบ
-    </button>
+  <button class="login-btn" onclick="login()">
+    Login
+  </button>
 
-    <p id="error" style="color:red;text-align:center;margin-top:10px"></p>
+  <div id="error" class="error"></div>
 
+  <div class="back">
+    กลับหน้า <a href="index.html">Home</a>
   </div>
 
 </div>
@@ -43,20 +156,26 @@ async function login(){
   try{
 
     const res = await fetch("https://medica-plus.onrender.com/api/admin/login",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json"},
-    body:JSON.stringify({ username, password })
+      method:"POST",
+      headers:{ "Content-Type":"application/json"},
+      body:JSON.stringify({ username, password })
     })
 
+    const data = await res.json()
+
     if(res.ok){
+
+      localStorage.setItem("adminToken", data.token)
+      localStorage.setItem("adminName", data.name || username)
+
       window.location.href = "admin.html"
+
     }else{
-      const msg = await res.text()
-      errorBox.innerText = msg || "Login failed"
+      errorBox.innerText = data.message || "Login ไม่สำเร็จ"
     }
 
   }catch(err){
-    errorBox.innerText = "Server not responding"
+    errorBox.innerText = "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์"
   }
 }
 </script>

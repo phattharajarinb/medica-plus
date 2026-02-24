@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Patient Register | Medica+</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:linear-gradient(135deg,#7fb3ff,#cfe6ff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* ===== GLASS CARD ===== */
+.register-card{
+  width:420px;
+  padding:45px;
+  border-radius:30px;
+  background:rgba(255,255,255,0.65);
+  backdrop-filter:blur(25px);
+  box-shadow:0 40px 80px rgba(0,60,150,0.25);
+}
+
+.logo{
+  text-align:center;
+  font-size:24px;
+  font-weight:700;
+  color:#0b3c74;
+  margin-bottom:10px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#5b7aa6;
+  margin-bottom:30px;
+  font-size:14px;
+}
+
+.input-group{
+  margin-bottom:18px;
+}
+
+.input-group label{
+  font-size:13px;
+  color:#0b3c74;
+  display:block;
+  margin-bottom:6px;
+}
+
+.input-group input{
+  width:100%;
+  padding:12px 15px;
+  border-radius:14px;
+  border:none;
+  outline:none;
+  background:#f1f7ff;
+  font-size:14px;
+}
+
+.input-group input:focus{
+  box-shadow:0 0 0 2px #3aa0ff;
+}
+
+/* ===== BUTTON ===== */
+.register-btn{
+  width:100%;
+  margin-top:10px;
+  background:linear-gradient(135deg,#3aa0ff,#0066ff);
+  border:none;
+  color:white;
+  padding:14px;
+  border-radius:30px;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,100,255,0.35);
+  transition:0.3s;
+}
+
+.register-btn:hover{
+  transform:translateY(-2px);
+}
+
+.error{
+  margin-top:12px;
+  text-align:center;
+  font-size:13px;
+  color:red;
+}
+
+.bottom{
+  margin-top:20px;
+  text-align:center;
+  font-size:13px;
+  color:#5b7aa6;
+}
+
+.bottom a{
+  color:#0066ff;
+  text-decoration:none;
+  font-weight:500;
+}
+</style>
+</head>
+
+<body>
+
+<div class="register-card">
+
+  <div class="logo">Medica+</div>
+  <div class="subtitle">สมัครสมาชิกผู้ป่วย</div>
+
+  <form id="registerForm">
+
+    <div class="input-group">
+      <label>ชื่อ-นามสกุล</label>
+      <input type="text" id="fullName" required>
+    </div>
+
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" id="email" required>
+    </div>
+
+    <div class="input-group">
+      <label>เบอร์โทรศัพท์</label>
+      <input type="text" id="phone" required>
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" required>
+    </div>
+
+    <div class="input-group">
+      <label>Confirm Password</label>
+      <input type="password" id="confirmPassword" required>
+    </div>
+
+    <button type="submit" class="register-btn">
+      สมัครสมาชิก
+    </button>
+
+    <div id="error" class="error"></div>
+
+  </form>
+
+  <div class="bottom">
+    มีบัญชีแล้ว? <a href="login.html">เข้าสู่ระบบ</a>
+  </div>
+
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e){
+  e.preventDefault();
+
+  const fullName = document.getElementById("fullName").value;
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+  const errorBox = document.getElementById("error");
+
+  errorBox.innerText = "";
+
+  if(password !== confirmPassword){
+    errorBox.innerText = "รหัสผ่านไม่ตรงกัน";
+    return;
+  }
+
+  try{
+    const res = await fetch("https://medica-plus.onrender.com/api/patients/register",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify({ fullName, email, phone, password })
+    });
+
+    const data = await res.json();
+
+    if(res.ok){
+      alert("สมัครสมาชิกสำเร็จ 🎉");
+      window.location.href = "login.html";
+    }else{
+      errorBox.innerText = data.message || "สมัครไม่สำเร็จ";
+    }
+
+  }catch(err){
+    errorBox.innerText = "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์";
+  }
+});
+</script>
+
+</body>
+</html>

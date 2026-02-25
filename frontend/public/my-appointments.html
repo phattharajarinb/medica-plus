@@ -201,21 +201,39 @@ async function loadAppointments(){
   const res = await fetch(`https://medica-plus.onrender.com/api/appointments/my/${phone}`);
   const data = await res.json();
 
+  console.log("Appointments:", data);
+
   document.getElementById("upcoming").innerHTML="";
   document.getElementById("past").innerHTML="";
   document.getElementById("cancelled").innerHTML="";
 
   data.forEach(app=>{
+
+    // ✅ ป้องกัน undefined
+    const doctorName =
+      app.doctorName ||
+      app.doctor?.name ||
+      app.doctorId?.name ||
+      "ไม่พบชื่อแพทย์";
+
+    const department =
+      app.department ||
+      app.doctor?.department ||
+      app.doctorId?.department ||
+      "ไม่ระบุแผนก";
+
     const card = `
       <div class="app-card">
         <div class="badge ${app.status}">${app.status}</div>
-        <h3>${app.doctorName}</h3>
+        <h3>${doctorName}</h3>
         <p><strong>วันที่:</strong> ${app.date}</p>
         <p><strong>เวลา:</strong> ${app.time}</p>
-        <p><strong>แผนก:</strong> ${app.department}</p>
-        ${app.status==="upcoming" ?
-          `<button class="cancel-btn" onclick="cancelAppointment('${app._id}')">ยกเลิกนัด</button>`
-        : ""}
+        <p><strong>แผนก:</strong> ${department}</p>
+        ${
+          app.status==="upcoming"
+          ? `<button class="cancel-btn" onclick="cancelAppointment('${app._id}')">ยกเลิกนัด</button>`
+          : ""
+        }
       </div>
     `;
 

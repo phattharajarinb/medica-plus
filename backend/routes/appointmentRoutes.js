@@ -178,6 +178,16 @@ router.put("/:id", async (req, res) => {
   }
 })
 
+router.put("/:id/cancel", async (req, res) => {
+  const appointment = await Appointment.findById(req.params.id);
+  if (!appointment) return res.status(404).json({ message: "Not found" });
+
+  appointment.status = "cancelled";
+  await appointment.save();
+
+  res.json({ message: "Appointment cancelled" });
+});
+
 // DELETE APPOINTMENT (HARD DELETE)
 router.delete("/:id", async (req, res) => {
   try {
@@ -213,6 +223,25 @@ router.get("/my/:phone", async (req, res) => {
 
   } catch (err) {
     res.status(500).json({ error: err.message })
+  }
+})
+
+router.post("/", async (req, res) => {
+  try {
+    const newAppointment = new Appointment(req.body)
+    await newAppointment.save()
+
+    res.status(201).json({ message: "จองสำเร็จ" })
+  } catch (err) {
+
+    // ดักกรณีจองซ้ำ
+    if (err.code === 11000) {
+      return res.status(400).json({
+        message: "เวลานี้ถูกจองไปแล้ว กรุณาเลือกเวลาอื่น"
+      })
+    }
+
+    res.status(500).json({ message: "เกิดข้อผิดพลาด" })
   }
 })
 

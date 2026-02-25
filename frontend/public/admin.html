@@ -161,6 +161,7 @@ th{background:#f1f5f9;text-align:left}
 <th>แพทย์</th>
 <th>วันที่</th>
 <th>เวลา</th>
+<th>สถานะ</th>  
 <th></th>
 </tr>
 </thead>
@@ -300,7 +301,13 @@ alert("บันทึกสำเร็จ")
 
 //การจอง
 function renderBookings(){
-bookingTable.innerHTML=bookings.map(b=>`
+bookingTable.innerHTML=bookings.map(b=>{
+
+const statusLabel = b.status === "cancelled"
+? `<span style="color:#ef4444;font-weight:600;">ยกเลิกการจอง</span>`
+: `<span style="color:#10b981;font-weight:600;">จองแล้ว</span>`
+
+return `
 <tr>
 <td>
 <input value="${b.patientName||''}"
@@ -334,11 +341,14 @@ value="${b.time}"
 onchange="updateBooking('${b._id}','time',this.value)">
 </td>
 
+<td>${statusLabel}</td>  <!-- เพิ่มตรงนี้ -->
+
 <td>
 <button class="danger" onclick="deleteBooking('${b._id}')">ลบ</button>
 </td>
 </tr>
-`).join("")
+`
+}).join("")
 }
 
 async function createBooking(){
@@ -374,6 +384,23 @@ body:JSON.stringify({...b,[field]:value})
 async function deleteBooking(id){
 await fetch(API_BOOK+"/"+id,{method:"DELETE"})
 loadBookings()
+}
+
+async function loadBookings(){
+try{
+const res=await fetch(API_BOOK)
+if(!res.ok) throw new Error("โหลดข้อมูลไม่ได้")
+bookings=await res.json()
+renderBookings()
+}catch(err){
+console.error(err)
+bookingTable.innerHTML = `
+<tr>
+<td colspan="7" style="text-align:center;color:red;">
+โหลดข้อมูลไม่สำเร็จ
+</td>
+</tr>`
+}
 }
 
 loadAll()

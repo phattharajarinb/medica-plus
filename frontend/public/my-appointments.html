@@ -185,12 +185,6 @@ body{
     <div class="grid" id="past"></div>
   </div>
 
-  <!-- CANCELLED -->
-  <div class="section">
-    <div class="section-title">การนัดที่ยกเลิกแล้ว</div>
-    <div class="grid" id="cancelled"></div>
-  </div>
-
 </div>
 
 <script>
@@ -203,13 +197,17 @@ async function loadAppointments(){
 
   console.log("Appointments:", data);
 
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
   document.getElementById("upcoming").innerHTML="";
   document.getElementById("past").innerHTML="";
-  document.getElementById("cancelled").innerHTML="";
 
   data.forEach(app=>{
 
-    // ✅ ป้องกัน undefined
+    // ❌ ข้ามรายการที่ยกเลิกแล้ว
+    if(app.status === "cancelled") return;
+
     const doctorName =
       app.doctorName ||
       app.doctor?.name ||
@@ -222,25 +220,31 @@ async function loadAppointments(){
       app.doctorId?.department ||
       "ไม่ระบุแผนก";
 
+    const appointmentDate = new Date(app.date);
+    appointmentDate.setHours(0,0,0,0);
+
+    const isUpcoming = appointmentDate >= today;
+
     const card = `
       <div class="app-card">
-        <div class="badge ${app.status}">${app.status}</div>
         <h3>${doctorName}</h3>
         <p><strong>วันที่:</strong> ${app.date}</p>
         <p><strong>เวลา:</strong> ${app.time}</p>
         <p><strong>แผนก:</strong> ${department}</p>
         ${
-          app.status==="upcoming"
-          ? `<button class="cancel-btn" onclick="cancelAppointment('${app._id}')">ยกเลิกนัด</button>`
+          isUpcoming
+          ? `<button class="cancel-btn" 
+               style="padding:5px 12px;font-size:12px;border-radius:15px;"
+               onclick="cancelAppointment('${app._id}')">
+               ยกเลิก
+             </button>`
           : ""
         }
       </div>
     `;
 
-    if(app.status==="upcoming")
+    if(isUpcoming)
       document.getElementById("upcoming").innerHTML+=card;
-    else if(app.status==="cancelled")
-      document.getElementById("cancelled").innerHTML+=card;
     else
       document.getElementById("past").innerHTML+=card;
   });

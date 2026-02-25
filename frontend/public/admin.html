@@ -137,9 +137,18 @@ th{background:#f1f5f9;text-align:left}
 
 <div class="row">
 <input id="bookPatient" placeholder="ชื่อคนไข้">
+<input id="bookPhone" placeholder="เบอร์โทร">
+
+<select id="bookType">
+<option value="consult">Consult</option>
+<option value="followup">Follow Up</option>
+<option value="checkup">Check Up</option>
+</select>
+
 <select id="bookDoctor"></select>
 <input type="date" id="bookDate">
 <input type="time" id="bookTime">
+
 <button class="success" onclick="createBooking()">สร้างการจอง</button>
 </div>
 
@@ -147,6 +156,8 @@ th{background:#f1f5f9;text-align:left}
 <thead>
 <tr>
 <th>คนไข้</th>
+<th>เบอร์โทร</th>
+<th>ประเภท</th>
 <th>แพทย์</th>
 <th>วันที่</th>
 <th>เวลา</th>
@@ -296,6 +307,19 @@ bookingTable.innerHTML=bookings.map(b=>`
 onchange="updateBooking('${b._id}','patientName',this.value)">
 </td>
 
+<td>
+<input value="${b.patientPhone||''}"
+onchange="updateBooking('${b._id}','patientPhone',this.value)">
+</td>
+
+<td>
+<select onchange="updateBooking('${b._id}','appointmentType',this.value)">
+<option value="consult" ${b.appointmentType==="consult"?"selected":""}>Consult</option>
+<option value="followup" ${b.appointmentType==="followup"?"selected":""}>Follow Up</option>
+<option value="checkup" ${b.appointmentType==="checkup"?"selected":""}>Check Up</option>
+</select>
+</td>
+
 <td>${b.doctor?.name||""}</td>
 
 <td>
@@ -324,11 +348,15 @@ headers:{'Content-Type':'application/json'},
 body:JSON.stringify({
 doctor:bookDoctor.value,
 patientName:bookPatient.value,
+patientPhone:bookPhone.value,
+appointmentType:bookType.value,
 date:bookDate.value,
 time:bookTime.value
 })
 })
+
 bookPatient.value=""
+bookPhone.value=""
 bookDate.value=""
 bookTime.value=""
 loadBookings()

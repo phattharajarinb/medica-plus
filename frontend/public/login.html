@@ -157,13 +157,12 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
 
     if(res.ok){
       alert("Login สำเร็จ 🎉");
-
-      // เก็บ token
+      
       localStorage.setItem("patientToken", data.token);
-      localStorage.setItem("patientName", data.name);
-      localStorage.setItem("patientPhone", data.phone);
+      localStorage.setItem("patientName", data.user.name);
+      localStorage.setItem("patientPhone", data.user.phone);
 
-      window.location.href = "index.html";
+      window.location.href = "index_old.html";
     }else{
       alert(data.message || "Login ไม่สำเร็จ");
     }

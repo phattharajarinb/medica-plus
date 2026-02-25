@@ -8,9 +8,9 @@ const Doctor = require("../models/Doctor")
 router.post("/", async (req, res) => {
   try {
 
-    const { doctor, date, time, patientName } = req.body
+    const { doctor, date, time, patientName, patientPhone, appointmentType } = req.body
 
-    if (!doctor || !date || !time || !patientName) {
+    if (!doctor || !date || !time || !patientName || !appointmentType) {
       return res.status(400).json({ message: "Missing required fields" })
     }
 
@@ -49,6 +49,8 @@ router.post("/", async (req, res) => {
       date,
       time,
       patientName,
+      patientPhone,
+      appointmentType,
       status: "booked"
     })
 

@@ -15,6 +15,19 @@ const appointmentSchema = new mongoose.Schema(
     trim: true
   },
 
+  // เพิ่มเบอร์โทร
+  patientPhone: {
+    type: String,
+    trim: true
+  },
+
+  // เพิ่มประเภทนัดหมาย
+  appointmentType: {
+    type: String,
+    enum: ["followup", "consult", "checkup"],
+    default: "consult"
+  },
+
   // format YYYY-MM-DD
   date: {
     type: String,
@@ -41,7 +54,7 @@ const appointmentSchema = new mongoose.Schema(
 )
 
 
-//ป้องกันจองซ้ำ doctor + date + time
+// ป้องกันจองซ้ำ doctor + date + time
 appointmentSchema.index(
   { doctor: 1, date: 1, time: 1 },
   { unique: true }

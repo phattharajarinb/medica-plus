@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medica+ Dashboard</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family: 'Segoe UI', sans-serif;
+  background:linear-gradient(135deg,#7fb3ff,#cfe6ff);
+  padding:40px;
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(15px);
+  padding:40px;
+  border-radius:30px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.15);
+}
+
+h1{
+  margin-bottom:30px;
+  color:#123b75;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:25px;
+  margin-bottom:40px;
+}
+
+.card{
+  background:white;
+  padding:25px;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+}
+
+.label{
+  color:#6b7280;
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.stat{
+  font-size:32px;
+  font-weight:bold;
+  color:#1e40af;
+}
+
+.chart-card{
+  background:white;
+  padding:30px;
+  border-radius:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+canvas{
+  margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>📊 Admin Dashboard</h1>
+
+<div class="grid">
+
+  <div class="card">
+    <div class="label">จำนวนผู้ป่วยทั้งหมด</div>
+    <div class="stat" id="totalPatients">0</div>
+  </div>
+
+  <div class="card">
+    <div class="label">จำนวนการจองทั้งหมด</div>
+    <div class="stat" id="totalAppointments">0</div>
+  </div>
+
+  <div class="card">
+    <div class="label">% มาตามนัด</div>
+    <div class="stat" id="attendanceRate">0%</div>
+  </div>
+
+</div>
+
+<div class="chart-card">
+  <h3 style="color:#123b75;">จำนวนการจองรายวัน</h3>
+  <canvas id="bookingChart"></canvas>
+</div>
+
+</div>
+
+<script>
+async function loadDashboard(){
+  const res = await fetch("http://localhost:5000/api/dashboard");
+  const data = await res.json();
+
+  document.getElementById("totalPatients").innerText = data.totalPatients;
+  document.getElementById("totalAppointments").innerText = data.totalAppointments;
+  document.getElementById("attendanceRate").innerText = data.attendanceRate + "%";
+
+  const ctx = document.getElementById("bookingChart").getContext("2d");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: data.dailyBookings.map(d => d.date),
+      datasets: [{
+        label: "จำนวนการจอง",
+        data: data.dailyBookings.map(d => d.count),
+        borderColor: "#2563eb",
+        backgroundColor: "rgba(37,99,235,0.15)",
+        fill: true,
+        tension: 0.4,
+        pointRadius:5,
+        pointBackgroundColor:"#1e40af"
+      }]
+    },
+    options:{
+      plugins:{
+        legend:{
+          display:false
+        }
+      }
+    }
+  });
+}
+
+loadDashboard();
+</script>
+
+</body>
+</html>

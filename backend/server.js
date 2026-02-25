@@ -23,11 +23,13 @@ const doctorRoutes = require("./routes/doctorRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const adminAuthRoutes = require("./routes/adminAuthRoutes");
 const patientAuthRoutes = require("./routes/patientAuthRoutes"); 
+const dashboardRoutes = require("./routes/dashboard");
 
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/admin", adminAuthRoutes);
 app.use("/api/patient", patientAuthRoutes); 
+app.use("/api/dashboard", dashboardRoutes);
 
 // Test Route
 app.get("/api", (req, res) => {

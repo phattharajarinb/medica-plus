@@ -158,28 +158,32 @@ body{
 
 .dropdown{
   position:absolute;
-  top:40px;
+  top:45px;
   left:0;
-  background:white;
-  border-radius:14px;
-  padding:8px;
-  box-shadow:0 20px 45px rgba(0,0,0,0.18);
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(20px);
+  border-radius:18px;
+  padding:10px;
+  box-shadow:0 25px 50px rgba(0,60,150,0.15);
   display:none;
-  min-width:260px;
-  z-index:9999;
+  min-width:240px;
+  z-index:1000;
   animation:fadeIn .25s ease;
+  border:1px solid rgba(0,120,255,0.15);
 }
 
 .doctor-item{
-  padding:12px 14px;
-  border-radius:10px;
+  padding:12px 16px;
+  border-radius:12px;
   cursor:pointer;
   transition:.2s;
+  color:#0b3c74;
+  font-weight:500;
 }
 
 .doctor-item:hover{
-  background:#eef6ff;
-  transform:translateX(3px);
+  background:rgba(0,120,255,0.08);
+  transform:translateX(4px);
 }
 
 small{
@@ -208,7 +212,15 @@ small{
       <div id="doctorDropdown" class="dropdown"></div>
     </div>
 
-    <a>Services</a>
+    <div style="position:relative">
+  <a onclick="toggleServices()">Services ▾</a>
+  <div id="serviceDropdown" class="dropdown">
+    <div class="doctor-item" onclick="goMyAppointments()">
+      📅 การนัดของฉัน
+    </div>
+  </div>
+</div>
+
     <a>About</a>
   </div>
 
@@ -325,6 +337,7 @@ function selectDoctor(id){
 document.addEventListener("click",(e)=>{
   if(!e.target.closest(".menu")){
     document.getElementById("doctorDropdown").style.display="none";
+    document.getElementById("serviceDropdown").style.display="none";
   }
 });
 
@@ -390,6 +403,63 @@ function renderAuth(){
         Admin
       </div>
     `;
+  }
+}
+
+function toggleServices(){
+  const serviceBox = document.getElementById("serviceDropdown");
+  const doctorBox = document.getElementById("doctorDropdown");
+
+  // ถ้า service เปิดอยู่ → ปิด
+  if(serviceBox.style.display === "block"){
+    serviceBox.style.display = "none";
+    return;
+  }
+
+  // ปิดอันอื่นก่อน
+  closeAllDropdowns();
+
+  // เปิด service
+  serviceBox.style.display = "block";
+}
+
+function goMyAppointments(){
+  const token = localStorage.getItem("patientToken");
+
+  if(!token){
+    alert("กรุณาเข้าสู่ระบบก่อน");
+    window.location.href = "login.html";
+    return;
+  }
+
+  window.location.href = "my-appointments.html";
+}
+
+//ควบคุม dropdown ให้อันเดียวเปิดได้
+function closeAllDropdowns(){
+  document.getElementById("doctorDropdown").style.display = "none";
+  document.getElementById("serviceDropdown").style.display = "none";
+}
+
+function toggleDoctors(){
+  const doctorBox = document.getElementById("doctorDropdown");
+  const serviceBox = document.getElementById("serviceDropdown");
+
+  // ถ้า doctor เปิดอยู่ → ปิด
+  if(doctorBox.style.display === "block"){
+    doctorBox.style.display = "none";
+    return;
+  }
+
+  // ปิดอันอื่นก่อน
+  closeAllDropdowns();
+
+  // เปิด doctor
+  doctorBox.style.display = "block";
+
+  if(!doctorsLoaded){
+    loadDoctors();
+    doctorsLoaded = true;
   }
 }
 

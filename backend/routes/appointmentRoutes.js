@@ -197,5 +197,23 @@ router.delete("/:id", async (req, res) => {
   }
 })
 
+// GET MY APPOINTMENTS
+router.get("/my/:phone", async (req, res) => {
+  try {
+
+    const { phone } = req.params
+
+    const data = await Appointment.find({
+      patientPhone: phone
+    })
+    .populate("doctor")
+    .sort({ date: 1, time: 1 })
+
+    res.json(data)
+
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
 
 module.exports = router

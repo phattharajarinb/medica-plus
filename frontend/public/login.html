@@ -162,7 +162,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
       localStorage.setItem("patientName", data.user?.name || data.name || "");
       localStorage.setItem("patientPhone", data.user?.phone || data.phone || "");
 
-      window.location.href = "index_old.html";
+      window.location.href = "index.html";
     }else{
       alert(data.message || "Login ไม่สำเร็จ");
     }

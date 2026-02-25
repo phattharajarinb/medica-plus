@@ -466,6 +466,33 @@ function toggleDoctors(){
 renderAuth();
 
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+  const token = localStorage.getItem("patientToken");
+  const name = localStorage.getItem("patientName");
+
+  if(token){
+
+    // หา link login
+    const loginBtn = document.querySelector("a[href='login.html']");
+
+    if(loginBtn){
+      loginBtn.textContent = "Logout (" + (name || "") + ")";
+      loginBtn.href = "#";
+
+      loginBtn.addEventListener("click", function(){
+        localStorage.removeItem("patientToken");
+        localStorage.removeItem("patientName");
+        localStorage.removeItem("patientPhone");
+        window.location.reload();
+      });
+    }
+
+  }
+
+});
+</script>
 
 </body>
 </html>

@@ -143,7 +143,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
   const password = document.getElementById("password").value;
 
   try{
-    const res = await fetch("https://medica-plus.onrender.com/api/patients/login",{
+    const res = await fetch("https://medica-plus.onrender.com/api/patient/login",{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
@@ -152,6 +152,8 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
     });
 
     const data = await res.json();
+
+    console.log("LOGIN DATA:", data);
 
     if(res.ok){
       alert("Login สำเร็จ 🎉");

@@ -212,15 +212,7 @@ small{
     <a>About</a>
   </div>
 
-  <div style="display:flex; gap:15px;">
-    <div class="action-btn" onclick="location.href='login.html'">
-      Login
-    </div>
-
-    <div class="action-btn" onclick="location.href='admin-login.html'">
-      Admin
-    </div>
-  </div>
+  <div id="authArea" style="display:flex; gap:15px; position:relative;"></div>
 </div>
 
 <div class="hero">
@@ -335,6 +327,73 @@ document.addEventListener("click",(e)=>{
     document.getElementById("doctorDropdown").style.display="none";
   }
 });
+
+/*Dynamic Login Button*/
+
+function renderAuth(){
+  const authArea = document.getElementById("authArea");
+  const token = localStorage.getItem("patientToken");
+  const name = localStorage.getItem("patientName");
+
+  if(token && name){
+    authArea.innerHTML = `
+      <div style="position:relative;">
+        <div class="action-btn" id="userBtn">
+          ${name}
+        </div>
+
+        <div id="logoutBox" 
+             style="display:none;
+                    position:absolute;
+                    top:50px;
+                    right:0;
+                    background:white;
+                    border-radius:12px;
+                    padding:10px 20px;
+                    box-shadow:0 15px 30px rgba(0,0,0,0.15);
+                    cursor:pointer;">
+          Logout
+        </div>
+      </div>
+
+      <div class="action-btn" onclick="location.href='admin-login.html'">
+        Admin
+      </div>
+    `;
+
+    const userBtn = document.getElementById("userBtn");
+    const logoutBox = document.getElementById("logoutBox");
+
+    userBtn.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      logoutBox.style.display =
+        logoutBox.style.display === "block" ? "none" : "block";
+    });
+
+    logoutBox.addEventListener("click", ()=>{
+      localStorage.removeItem("patientToken");
+      localStorage.removeItem("patientName");
+      window.location.reload();
+    });
+
+    document.addEventListener("click", ()=>{
+      logoutBox.style.display = "none";
+    });
+
+  } else {
+    authArea.innerHTML = `
+      <div class="action-btn" onclick="location.href='login.html'">
+        Login
+      </div>
+
+      <div class="action-btn" onclick="location.href='admin-login.html'">
+        Admin
+      </div>
+    `;
+  }
+}
+
+renderAuth();
 
 </script>
 

@@ -165,9 +165,9 @@ body{
 document.getElementById("registerForm").addEventListener("submit", async function(e){
   e.preventDefault();
 
-  const fullName = document.getElementById("fullName").value;
-  const email = document.getElementById("email").value;
-  const phone = document.getElementById("phone").value;
+  const name = document.getElementById("fullName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
   const password = document.getElementById("password").value;
   const confirmPassword = document.getElementById("confirmPassword").value;
   const errorBox = document.getElementById("error");
@@ -180,12 +180,17 @@ document.getElementById("registerForm").addEventListener("submit", async functio
   }
 
   try{
-    const res = await fetch("https://medica-plus.onrender.com/api/patients/register",{
+    const res = await fetch("https://medica-plus.onrender.com/api/patient/register",{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
       },
-      body: JSON.stringify({ fullName, email, phone, password })
+      body: JSON.stringify({ 
+        name,      // 🔥 แก้ตรงนี้
+        email, 
+        phone, 
+        password 
+      })
     });
 
     const data = await res.json();
@@ -199,6 +204,7 @@ document.getElementById("registerForm").addEventListener("submit", async functio
 
   }catch(err){
     errorBox.innerText = "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์";
+    console.error(err);
   }
 });
 </script>

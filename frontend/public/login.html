@@ -151,21 +151,20 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
       body: JSON.stringify({ email, password })
     });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    console.log("LOGIN DATA:", data);
+if(res.ok && data.user){
 
-    if(res.ok){
-      alert("Login สำเร็จ 🎉");
-      
-      localStorage.setItem("patientToken", data.token);
-      localStorage.setItem("patientName", data.user.name);
-      localStorage.setItem("patientPhone", data.user.phone);
+  localStorage.setItem("patientToken", data.token);
+  localStorage.setItem("patientName", data.user?.name || "");
+  localStorage.setItem("patientPhone", data.user?.phone || "");
 
-      window.location.href = "index_old.html";
-    }else{
-      alert(data.message || "Login ไม่สำเร็จ");
-    }
+  alert("Login สำเร็จ 🎉");
+  window.location.href = "index.html";
+
+}else{
+  alert(data.message || "Login ไม่สำเร็จ");
+}
 
   }catch(err){
     alert("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์");

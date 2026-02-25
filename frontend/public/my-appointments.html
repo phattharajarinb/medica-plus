@@ -24,7 +24,6 @@ body{
   padding:40px;
 }
 
-/* ===== MAIN GLASS CARD (เหมือน index) ===== */
 .main-card{
   width:100%;
   max-width:1200px;
@@ -35,7 +34,6 @@ body{
   box-shadow:0 25px 60px rgba(0,0,0,0.15);
 }
 
-/* ===== NAVBAR (เหมือน index) ===== */
 .navbar{
   display:flex;
   justify-content:space-between;
@@ -70,7 +68,6 @@ body{
   transform:translateY(-3px);
 }
 
-/* ===== PAGE TITLE ===== */
 .page-title{
   font-size:40px;
   font-weight:700;
@@ -78,7 +75,6 @@ body{
   margin-bottom:30px;
 }
 
-/* ===== SECTION ===== */
 .section{
   margin-top:30px;
 }
@@ -89,7 +85,6 @@ body{
   color:#1c3f75;
 }
 
-/* ===== APPOINTMENT CARDS ===== */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
@@ -120,7 +115,7 @@ body{
   color:#555;
 }
 
-/* Status Badge */
+/* ===== STATUS BADGE ===== */
 .badge{
   position:absolute;
   top:20px;
@@ -132,9 +127,9 @@ body{
   color:white;
 }
 
-.upcoming{ background:#22c55e; }
-.past{ background:#a78bfa; }
-.cancelled{ background:#ef4444; }
+.completed{ background:#22c55e; }   /* มาตามนัด */
+.no-show{ background:#ef4444; }     /* ไม่มาตามนัด */
+.cancelled{ background:#6b7280; }   /* ยกเลิก */
 
 /* Cancel Button */
 .cancel-btn{
@@ -161,7 +156,6 @@ body{
 
 <div class="main-card">
 
-  <!-- NAVBAR -->
   <div class="navbar">
     <div class="logo">Medica+</div>
     <div class="nav-right">
@@ -170,16 +164,13 @@ body{
     </div>
   </div>
 
-  <!-- TITLE -->
   <div class="page-title">การนัดของฉัน</div>
 
-  <!-- UPCOMING -->
   <div class="section">
     <div class="section-title">การนัดที่กำลังจะมาถึง</div>
     <div class="grid" id="upcoming"></div>
   </div>
 
-  <!-- PAST -->
   <div class="section">
     <div class="section-title">การนัดที่ผ่านมา</div>
     <div class="grid" id="past"></div>
@@ -195,8 +186,6 @@ async function loadAppointments(){
   const res = await fetch(`https://medica-plus.onrender.com/api/appointments/my/${phone}`);
   const data = await res.json();
 
-  console.log("Appointments:", data);
-
   const today = new Date();
   today.setHours(0,0,0,0);
 
@@ -204,9 +193,6 @@ async function loadAppointments(){
   document.getElementById("past").innerHTML="";
 
   data.forEach(app=>{
-
-    // ❌ ข้ามรายการที่ยกเลิกแล้ว
-    if(app.status === "cancelled") return;
 
     const doctorName =
       app.doctorName ||
@@ -225,21 +211,42 @@ async function loadAppointments(){
 
     const isUpcoming = appointmentDate >= today;
 
+    let statusBadge = "";
+
+    if(!isUpcoming){
+
+      if(app.status === "completed"){
+        statusBadge = `<div class="badge completed">มาตามนัด</div>`;
+      }
+
+      if(app.status === "no-show"){
+        statusBadge = `<div class="badge no-show">ไม่มาตามนัด</div>`;
+      }
+
+      if(app.status === "cancelled"){
+        statusBadge = `<div class="badge cancelled">ยกเลิก</div>`;
+      }
+    }
+
     const card = `
       <div class="app-card">
+
+        ${statusBadge}
+
         <h3>${doctorName}</h3>
         <p><strong>วันที่:</strong> ${app.date}</p>
         <p><strong>เวลา:</strong> ${app.time}</p>
         <p><strong>แผนก:</strong> ${department}</p>
+
         ${
-          isUpcoming
-          ? `<button class="cancel-btn" 
-               style="padding:5px 12px;font-size:12px;border-radius:15px;"
+          isUpcoming && app.status === "booked"
+          ? `<button class="cancel-btn"
                onclick="cancelAppointment('${app._id}')">
                ยกเลิก
              </button>`
           : ""
         }
+
       </div>
     `;
 

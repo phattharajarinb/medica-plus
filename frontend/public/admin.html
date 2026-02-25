@@ -341,7 +341,25 @@ value="${b.time}"
 onchange="updateBooking('${b._id}','time',this.value)">
 </td>
 
-<td>${statusLabel}</td>  <!-- เพิ่มตรงนี้ -->
+<td>
+<select onchange="updateBooking('${b._id}','status',this.value)">
+<option value="booked" ${b.status==="booked"?"selected":""}>
+จองแล้ว
+</option>
+
+<option value="completed" ${b.status==="completed"?"selected":""}>
+มาตามนัด
+</option>
+
+<option value="no-show" ${b.status==="no-show"?"selected":""}>
+ไม่มาตามนัด
+</option>
+
+<option value="cancelled" ${b.status==="cancelled"?"selected":""}>
+ยกเลิกการจอง
+</option>
+</select>
+</td>
 
 <td>
 <button class="danger" onclick="deleteBooking('${b._id}')">ลบ</button>
@@ -374,11 +392,14 @@ loadBookings()
 
 async function updateBooking(id,field,value){
 const b=bookings.find(x=>x._id===id)
+
 await fetch(API_BOOK+"/"+id,{
 method:"PUT",
 headers:{'Content-Type':'application/json'},
 body:JSON.stringify({...b,[field]:value})
 })
+
+loadBookings()
 }
 
 async function deleteBooking(id){

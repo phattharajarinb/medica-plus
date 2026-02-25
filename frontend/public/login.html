@@ -161,6 +161,7 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
       // เก็บ token
       localStorage.setItem("patientToken", data.token);
       localStorage.setItem("patientName", data.name);
+      localStorage.setItem("patientPhone", data.phone);
 
       window.location.href = "index.html";
     }else{

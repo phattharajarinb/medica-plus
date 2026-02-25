@@ -61,13 +61,14 @@ body{
   color:#1c3d5a;
 }
 
-.select, input{
+.select, input, select{
   width:100%;
   padding:12px 14px;
   border-radius:12px;
   border:1px solid #e1edf5;
   margin-bottom:16px;
   font-size:15px;
+  box-sizing:border-box;
 }
 
 .slots{
@@ -155,7 +156,16 @@ button:hover{
 <div class="card">
 
 <h3>4. ข้อมูลผู้ป่วย</h3>
-<input id="patientName" placeholder="ชื่อ-นามสกุล">
+<input type="text" id="patientNameInput" placeholder="ชื่อ-นามสกุล" readonly>
+<input type="text" id="patientPhoneInput" placeholder="เบอร์โทรศัพท์" readonly>
+
+<h3>5. นัดหมายเพื่อ</h3>
+<select id="appointmentType">
+  <option value="">-- เลือกประเภท --</option>
+  <option value="followup">ตามนัด</option>
+  <option value="consult">ปรึกษาอาการใหม่</option>
+  <option value="checkup">ตรวจสุขภาพทั่วไป</option>
+</select>
 
 <button onclick="bookAppointment()">ยืนยันการจอง</button>
 
@@ -250,11 +260,13 @@ async function loadSlots(){
 // BOOK APPOINTMENT
 async function bookAppointment(){
 
-  const patientName = document.getElementById("patientName").value
+  const patientName = document.getElementById("patientNameInput").value
+  const patientPhone = document.getElementById("patientPhoneInput").value
+  const appointmentType = document.getElementById("appointmentType").value
   const date = document.getElementById("dateInput").value
   const status = document.getElementById("status")
 
-  if(!selectedDoctor || !selectedSlot || !patientName || !date){
+  if(!selectedDoctor || !selectedSlot || !patientName || !date || !appointmentType){
     status.innerHTML = '<span class="error">กรอกข้อมูลไม่ครบ</span>'
     return
   }
@@ -268,7 +280,9 @@ async function bookAppointment(){
         doctor: selectedDoctor,
         date: date,
         time: selectedSlot,
-        patientName: patientName
+        patientName: patientName,
+        patientPhone: patientPhone,
+        appointmentType: appointmentType
       })
     })
 
@@ -285,6 +299,15 @@ async function bookAppointment(){
     status.innerHTML = '<span class="error">Server error</span>'
   }
 }
+document.addEventListener("DOMContentLoaded", ()=>{
+
+  const name = localStorage.getItem("patientName") || ""
+  const phone = localStorage.getItem("patientPhone") || ""
+
+  document.getElementById("patientNameInput").value = name
+  document.getElementById("patientPhoneInput").value = phone
+
+})
 
 // INIT
 loadDoctors()

@@ -110,48 +110,59 @@ body{
   text-decoration:none;
 }
 
-/* TABLET */
-@media (max-width:768px){
+/* MOBILE RESPONSIVE DESIGN */
+@media (max-width: 768px){
+
+  body{
+    padding:20px;
+    align-items:flex-start;
+  }
+
   .login-card{
-    padding:30px;
+    width:100%;
+    max-width:100%;
+    padding:30px 22px;
     border-radius:22px;
   }
 
   .logo{
     font-size:22px;
   }
-}
 
-/* MOBILE */
-@media (max-width:480px){
-
-  body{
-    padding:15px;
+  .subtitle{
+    font-size:13px;
+    margin-bottom:25px;
   }
 
+  .input-group input{
+    padding:15px;
+    font-size:16px; /* ป้องกัน iPhone zoom */
+    border-radius:16px;
+  }
+
+  .login-btn{
+    padding:16px;
+    font-size:16px;
+    border-radius:18px;
+  }
+
+  .bottom{
+    font-size:13px;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 420px){
+
   .login-card{
-    padding:25px;
+    padding:25px 18px;
   }
 
   .logo{
     font-size:20px;
   }
 
-  .subtitle{
-    font-size:13px;
   }
-
-  .input-group input{
-    padding:13px 14px;
-    font-size:14px;
-  }
-
-  .login-btn{
-    padding:14px;
-    font-size:14px;
-  }
-
-}
 </style>
 </head>
 

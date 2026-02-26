@@ -6,59 +6,242 @@
 <title>Medica+ Admin</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,Arial}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui,Arial
+}
 
 body{
 min-height:100vh;
 background:linear-gradient(135deg,#7fb3ff,#cfe6ff);
-display:flex;align-items:center;justify-content:center;padding:40px;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
 }
 
 .app{
-width:1200px;background:#e9eef6;border-radius:30px;padding:30px;
+width:100%;
+max-width:1200px;
+background:#e9eef6;
+border-radius:30px;
+padding:25px;
 box-shadow:0 30px 90px rgba(0,0,0,.2);
 }
 
+/* ===== HEADER ===== */
 .header{
-display:flex;justify-content:space-between;align-items:center;margin-bottom:25px
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+flex-wrap:wrap;
+gap:15px;
 }
-.logo{font-size:22px;font-weight:700;color:#1f3b6d}
 
-.nav{display:flex;gap:25px}
-.nav button{
-background:none;border:none;font-size:15px;
-cursor:pointer;color:#1f3b6d;font-weight:500;
+.logo{
+font-size:20px;
+font-weight:700;
+color:#1f3b6d
 }
-.nav button.active{font-weight:700}
+
+.nav{
+display:flex;
+gap:15px;
+flex-wrap:wrap;
+}
+
+.nav button{
+background:none;
+border:none;
+font-size:14px;
+cursor:pointer;
+color:#1f3b6d;
+font-weight:500;
+}
+
+.nav button.active{
+font-weight:700
+}
 
 .admin-btn{
 background:linear-gradient(135deg,#3b82f6,#2563eb);
-color:white;padding:10px 22px;border-radius:30px;border:none;font-weight:600;
+color:white;
+padding:8px 18px;
+border-radius:30px;
+border:none;
+font-weight:600;
 }
 
+/* ===== PANEL ===== */
 .panel{
-background:white;border-radius:20px;padding:25px;margin-top:20px
+background:white;
+border-radius:20px;
+padding:20px;
+margin-top:15px;
+overflow-x:auto;
 }
-.hidden{display:none}
 
-h2{color:#1f3b6d;margin-bottom:15px}
+.hidden{
+display:none
+}
 
-.row{display:flex;gap:10px;margin-bottom:15px;align-items:center;flex-wrap:wrap}
+h2{
+color:#1f3b6d;
+margin-bottom:15px;
+font-size:18px;
+}
+
+/* ===== FORM ROW ===== */
+.row{
+display:flex;
+gap:10px;
+margin-bottom:15px;
+align-items:center;
+flex-wrap:wrap;
+}
 
 select,input{
-padding:8px 10px;border-radius:8px;border:1px solid #ddd
+padding:8px 10px;
+border-radius:8px;
+border:1px solid #ddd;
+min-width:120px;
 }
 
-button{border:none;padding:8px 14px;border-radius:8px;cursor:pointer}
-.primary{background:#1f3b6d;color:white}
-.success{background:#10b981;color:white}
-.danger{background:#ef4444;color:white}
+.row input,
+.row select{
+flex:1;
+min-width:140px;
+}
 
-table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid #eee}
-th{background:#f1f5f9;text-align:left}
+/* ===== BUTTONS ===== */
+button{
+border:none;
+padding:8px 14px;
+border-radius:8px;
+cursor:pointer;
+white-space:nowrap;
+}
 
-.time-input{width:120px}
+.primary{
+background:#1f3b6d;
+color:white
+}
+
+.success{
+background:#10b981;
+color:white
+}
+
+.danger{
+background:#ef4444;
+color:white
+}
+
+/* ===== TABLE ===== */
+table{
+width:100%;
+border-collapse:collapse;
+min-width:600px;
+}
+
+th,td{
+padding:10px;
+border-bottom:1px solid #eee;
+font-size:14px;
+}
+
+th{
+background:#f1f5f9;
+text-align:left;
+}
+
+.time-input{
+width:120px
+}
+
+/* TABLET */
+@media (max-width:768px){
+
+.app{
+padding:20px;
+border-radius:20px;
+}
+
+.logo{
+font-size:18px;
+}
+
+.nav{
+width:100%;
+}
+
+.nav button{
+font-size:13px;
+}
+
+h2{
+font-size:16px;
+}
+
+th,td{
+font-size:13px;
+padding:8px;
+}
+
+}
+
+/* MOBILE */
+@media (max-width:480px){
+
+body{
+padding:12px;
+}
+
+.app{
+padding:15px;
+border-radius:18px;
+}
+
+.header{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.nav{
+width:100%;
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.nav button{
+text-align:left;
+padding:6px 0;
+}
+
+.admin-btn{
+align-self:flex-start;
+}
+
+.row{
+flex-direction:column;
+align-items:stretch;
+}
+
+.row input,
+.row select,
+.row button{
+width:100%;
+}
+
+table{
+min-width:500px;
+}
+
+}
 </style>
 </head>
 

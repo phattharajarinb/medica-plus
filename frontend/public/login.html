@@ -2,6 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Patient Login | Medica+</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -103,6 +104,61 @@ body{
   text-decoration:none;
   font-weight:500;
 }
+
+/* MOBILE RESPONSIVE DESIGN */
+@media (max-width: 768px){
+
+  body{
+    padding:20px;
+    align-items:flex-start;
+  }
+
+  .login-card{
+    width:100%;
+    max-width:100%;
+    padding:30px 22px;
+    border-radius:22px;
+  }
+
+  .logo{
+    font-size:22px;
+  }
+
+  .subtitle{
+    font-size:13px;
+    margin-bottom:25px;
+  }
+
+  .input-group input{
+    padding:15px;
+    font-size:16px; /* ป้องกัน iPhone zoom */
+    border-radius:16px;
+  }
+
+  .login-btn{
+    padding:16px;
+    font-size:16px;
+    border-radius:18px;
+  }
+
+  .bottom{
+    font-size:13px;
+  }
+}
+
+/* Extra Small Devices */
+@media (max-width: 420px){
+
+  .login-card{
+    padding:25px 18px;
+  }
+
+  .logo{
+    font-size:20px;
+  }
+
+}
+
 </style>
 </head>
 

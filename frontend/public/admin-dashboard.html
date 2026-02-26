@@ -108,7 +108,7 @@ canvas{
 
 <script>
 async function loadDashboard(){
-  const res = await fetch("http://localhost:5000/api/dashboard");
+  const res = await fetch("https://medica-plus.onrender.com/api/dashboard");
   const data = await res.json();
 
   document.getElementById("totalPatients").innerText = data.totalPatients;

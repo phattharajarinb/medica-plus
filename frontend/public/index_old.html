@@ -129,6 +129,26 @@ button:hover{
 
 <div class="container">
 
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+  <div style="font-weight:600; font-size:20px; color:#1c3d5a;">
+    Medica+
+  </div>
+
+  <div>
+    <button onclick="goHome()" style="
+      padding:10px 22px;
+      border-radius:20px;
+      border:none;
+      background:#2c8fff;
+      color:white;
+      cursor:pointer;
+      box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    ">
+      Home
+    </button>
+  </div>
+</div>
+
 <div class="header">
 <h1>ระบบจองแพทย์ออนไลน์</h1>
 <p>เลือกแพทย์ วันที่ และเวลาที่ต้องการแบบ Real-time</p>
@@ -311,6 +331,10 @@ document.addEventListener("DOMContentLoaded", ()=>{
 
 // INIT
 loadDoctors()
+
+function goHome(){
+  window.location.href = "index.html"
+}
 
 </script>
 
